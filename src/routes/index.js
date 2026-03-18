@@ -12,5 +12,6 @@ router.use(checkPermission('0000'))
 
 router.use('/v1/api', require('./access'))
 router.use('/v1/api/user', require('./user'))
+router.use('/v1/api/task', require('./task'))
 
 module.exports = router
