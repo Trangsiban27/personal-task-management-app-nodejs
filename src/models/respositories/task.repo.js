@@ -20,6 +20,24 @@ const createTask = async ({
     })
 }
 
+const updateTask = async (payload, taskId) => {
+
+    return await taskModel.findByIdAndUpdate(
+        taskId,
+        payload,
+        { new: true }
+    ).select('-__v')
+}
+
+const getTaskById = async (id) => {
+
+    return taskModel
+        .findById(id)
+        .select('-__v -isDelete')
+}
+
 module.exports = {
-    createTask
+    createTask,
+    getTaskById,
+    updateTask
 }
