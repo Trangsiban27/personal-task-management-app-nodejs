@@ -13,5 +13,7 @@ router.get('/:taskId', asyncHandler(taskController.getTaskById))
 router.patch('/:taskId', asyncHandler(taskController.updateTask))
 router.patch('/:taskId/status', asyncHandler(taskController.updateTaskStatus))
 router.patch('/:taskId/priority', asyncHandler(taskController.updateTaskPriority))
+router.patch('/:taskId/delete', asyncHandler(taskController.deleteTask))
+router.get('', asyncHandler(taskController.searchTask))
 
 module.exports = router

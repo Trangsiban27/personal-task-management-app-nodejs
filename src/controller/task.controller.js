@@ -71,6 +71,32 @@ class TaskController {
             metadata: updateTask
         }).send(res)
     }
+
+    deleteTask = async (req, res, next) => {
+
+        const taskId = req.params.taskId
+
+        const task = await taskService.deleteTask(taskId)
+
+        new SuccessResponse({
+            message: 'Delete task successfully!',
+            metadata: task
+        }).send(res)
+    }
+    searchTask = async (req, res, next) => {
+
+        const userId = req.user.userId
+
+        const result = await taskService.searchTaskByUserId({
+            userId,
+            ...req.query
+        })
+
+        new SuccessResponse({
+            message: 'Search task successfully!',
+            metadata: result
+        }).send(res)
+    }
 }
 
 module.exports = new TaskController()

@@ -114,6 +114,87 @@ class taskService {
             priority: task.priority
         }
     }
+
+    static async deleteTask(taskId) {
+
+        if (!taskId) throw new BadRequestError('Task id is required!')
+
+        const task = await getTaskById(taskId)
+
+        if (!task) throw new NotfoundError('Task not found!')
+
+        task.isDelete = true
+
+        await task.save()
+
+        return {
+            _id: task?._id,
+            isDelete: task?.isDelete
+        }
+    }
+
+    static async searchTaskByUserId({
+        userId,
+        page = 1,
+        limit = 10,
+        search,
+        status,
+        priority,
+        sort = 'createdDate',
+        order = 'desc'
+    }) {
+
+        const skip = (page - 1) * limit
+
+        //filter base
+        const filter = {
+            user: userId,
+            isDelete: false
+        }
+
+        //2. filter status
+        if (status) {
+            filter.status = status
+        }
+
+        //3. filter priority
+        if (priority) {
+            filter.priority = priority
+        }
+
+        // 4. search
+        if (search) {
+            filter.$or = [
+                { title: { $regex: search, $options: 'i' } },
+                { description: { $regex: search, $options: 'i' } }
+            ]
+        }
+
+        //5. sort
+        const sortBy = {
+            [sort]: order === 'desc' ? -1 : 1
+        }
+
+        //6. query
+        const [tasks, total] = await Promise.all([
+            taskModel
+                .find(filter)
+                .sort(sortBy)
+                .skip(skip)
+                .limit(limit)
+                .select('-__v -user')
+        ])
+
+        return {
+            tasks,
+            pagination: {
+                total,
+                page: Number(page),
+                limit: Number(limit),
+                totalPages: Math.ceil(total / limit)
+            }
+        }
+    }
 }
 
 module.exports = taskService
