@@ -56,6 +56,8 @@ const authentication = asyncHandler(async (req, res, next) => {
 
     const userId = req.headers[HEADER.CLIENT_ID]
 
+    console.log('userId: ', userId)
+
     if (!userId) throw new BadRequestError('Invalid request!')
 
     const keyStore = await keyTokenService.findKeyByUserId(userId)
@@ -83,9 +85,13 @@ const authentication = asyncHandler(async (req, res, next) => {
 
     const accessToken = req.headers[HEADER.AUTHORIZATION]
 
+    console.log('accessToken: ', accessToken)
+
     if (!accessToken) throw new BadRequestError('Invalid request!')
 
     const decodeUser = JWT.verify(accessToken, keyStore.publicKey)
+
+    console.log('decodeUser: ', decodeUser)
 
     if (userId !== decodeUser.userId) throw new BadRequestError('Invalid request!')
 
