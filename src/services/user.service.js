@@ -12,7 +12,6 @@ class userService {
 
     static async findUserById(userId) {
 
-
         return await userModel
             .findById(userId)
             .select('-password -__v')
